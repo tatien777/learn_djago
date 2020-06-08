@@ -40,8 +40,8 @@ class UpdateManage(models.Manager):
 
 class Update(models.Model):
     user        = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.DO_NOTHING)
-    content     = models.TextField()
-    image       = models.ImageField(upload_to="")
+    content     = models.TextField(blank=True, null=True)
+    image       = models.ImageField(upload_to="",blank=True, null=True)
     updated     = models.DateTimeField(auto_now=True)
     timestamp   = models.DateTimeField(auto_now_add=True)
 
@@ -54,9 +54,11 @@ class Update(models.Model):
         # print(struct)
         # data = json.dumps(struct[0]['fields'])
         # return data
-        print("print self ",self.image.url)
+        # print("print self ",self.image.url)
         try:
             image = self.image.url
+            if self.image.url == "" :
+                image = ""
         except:
             image = ""
         # image = self.image

@@ -1,25 +1,34 @@
 import json
 from django.views.generic import View
 from django.http import JsonResponse, HttpResponse
-from updates.models import Update as UpdateModel
+
+
 from api_test.mixins import HttpResponseMixin
 # from django.core.serializers import serialize
 from .mixins import CSRFExemptMixin
 ## Creating, updateing,deleting, retrieving(10) == update model
-class UpdateModelDetailAPIView(CSRFExemptMixin,View):
+from updates.models import Update as UpdateModel
+from updates.forms import UpdateModelForm
+
+
+class UpdateModelDetailAPIView(HttpResponseMixin,CSRFExemptMixin,View):
     '''
     Retrieve,Update,Delete -> object
     '''
+    is_json = True
     def get(self,request,id,*arg,**kwargs):
         obj = UpdateModel.objects.get(id=id)
         json_data = obj.serialize()
-        return  HttpResponse(json_data,content_type='application/json') #json ,xml, htm  
+        return  self.render_to_response(json_data,status=200) #json ,xml, htm  
     def post(self,request,*args,**kwargs):
-        return  HttpResponse({},content_type='application/json') #json ,xml, htm   
+        json_data = json.dumps({"message": "Not allowed"})
+        return  self.render_to_response(json_data,status=403)   
     def put(self,request,*arg,**kwargs):
-        return  HttpResponse({},content_type='application/json') #json ,xml, htm   
+        json_data = {}
+        return  self.render_to_response(json_data,status=403)   
     def delete(self,request,*args,**kwargs):
-        return  HttpResponse({},content_type='application/json') #json ,xml, htm  
+        json_data = {}
+        return  self.render_to_response(json_data,status=403)   
 
 
 
@@ -32,7 +41,16 @@ class UpdateModelListAPIView(HttpResponseMixin,CSRFExemptMixin,View):
         json_data = qs.serialize()
         return  self.render_to_response(json_data)
     def post(self,request,*args,**kwargs):
-        data = json.dumps({'message':"No data"})
+        # print(request.post)
+        form = UpdateModelForm(request.POST)
+        if form.is_valid():
+            obj = form.save(commit=True)
+            obj.serialize()
+            return self.render_to_response(obj,status=201)
+        if form.errors:
+            data = json.dumps(form.errors)
+            return self.render_to_response(data,status=400)
+        data = {'message':"No allowed"}
         return  self.render_to_response(data,status=400)
     
     def delete(self,request,*args,**kwargs):

@@ -16,15 +16,30 @@ def get_list():
 
 def create_update():
     new_data = {
-        'user':1,
-        'content': 'Another new cool update'
+        'user': 3,
+        'content': 'new test',
+        'image':''
     }
-    r = requests.post(BASE_URL + ENDPOINT,new_data)
-    print(r.headers,r.status_code)
+    r = requests.post(BASE_URL + ENDPOINT  ,new_data)
+    # print(r.headers,r.status_code)
     if r.status_code == requests.codes.ok:
-        print(r.json())
+        # print(r.json())
+        return r.json()
+    return r.text
+
+def create_update_detail():
+    new_data = {
+        'user': 3,
+        'content': 'detail test',
+        'image':''
+    }
+    r = requests.post(BASE_URL + ENDPOINT + "1/" ,new_data)
+    # print(r.headers,r.status_code)
+    if r.status_code == requests.codes.ok:
+        # print(r.json())
         return r.json()
     return r.text
 # print()
 # get_list()
-print(create_update())
+# print(create_update())
+print(create_update_detail())
