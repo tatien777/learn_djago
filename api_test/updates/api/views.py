@@ -10,7 +10,7 @@ from .mixins import CSRFExemptMixin
 from updates.models import Update as UpdateModel
 from updates.forms import UpdateModelForm
 
-
+from .utils import  is_json
 class UpdateModelDetailAPIView(HttpResponseMixin,CSRFExemptMixin,View):
     '''
     Retrieve,Update,Delete -> object
@@ -47,19 +47,27 @@ class UpdateModelDetailAPIView(HttpResponseMixin,CSRFExemptMixin,View):
         if obj is None:
             error_data = json.dumps({"message":"Update not found"})
             return self.render_to_response(error_data,status=404)
-        
-        print(request.body)
-        new_data = json.loads(request.body)
-        print(new_data['content'])
-        json_data = json.dumps({'message':"Something new"})
-        return  self.render_to_response(json.dumps(new_data),status=200) 
+        if not is_json(request.body):
+            error_data = json.dumps({"message":"Invalid data sent, please send using Json"})
+            return self.render_to_response(error_data,status=400)
+        update_data = json.loads(request.body)
+        form = UpdateModelForm(update_data)
+        if form.is_valid():
+            obj = form.save(commit=True)
+            obj.serialize()
+            return self.render_to_response(obj,status=201)
+        if form.errors:
+            data = json.dumps(form.errors)
+            return self.render_to_response(data,status=400)
+        data = {'message':"No allowed"}
+        return  self.render_to_response(data,status=400)
 
     def delete(self,request,id,*args,**kwargs):
         obj = self.get_object(id=id)
         if obj is None:
             error_data = json.dumps({"message":"Update not found"})
             return self.render_to_response(error_data,status=404)
-        json_data = json.dumps({'message':"Something new"})
+        json_data = json.dumps({'message':"Something delete"})
         return  self.render_to_response(json_data,status=200) 
 
 
@@ -74,7 +82,11 @@ class UpdateModelListAPIView(HttpResponseMixin,CSRFExemptMixin,View):
         return  self.render_to_response(json_data)
     def post(self,request,*args,**kwargs):
         # print(request.post)
-        form = UpdateModelForm(request.POST)
+        if not is_json(request.body):
+            error_data = json.dumps({"message":"Invalid data sent, please send using Json"})
+            return self.render_to_response(error_data,status=400)
+        data = json.loads(request.body)
+        form = UpdateModelForm(data)
         if form.is_valid():
             obj = form.save(commit=True)
             obj.serialize()
