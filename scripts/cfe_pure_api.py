@@ -41,7 +41,7 @@ def create_update_detail():
 
 def do_obj_update():
     new_data = {
-        'id': 15,
+        "user": 3,
         'content': 'put test'
     }
     r = requests.put(BASE_URL + ENDPOINT + "15/" ,data= json.dumps(new_data) )  # json.dumps(new_data)
@@ -54,9 +54,9 @@ def do_obj_update():
 
 def do_obj_delete():
     new_data = {
-        'id': 15
+        'id': 16
     }
-    r = requests.delete(BASE_URL + ENDPOINT + "1/" )
+    r = requests.delete(BASE_URL + ENDPOINT + "{}/".format(new_data.get('id')) )
     # print(r.headers,r.status_code,r.json())
     print(r.status_code)
     if r.status_code == requests.codes.ok:
@@ -66,7 +66,7 @@ def do_obj_delete():
 
 def test():
     new_data = {
-        'id': 15,
+        'id': 14,
         'content': 'put test'
     }
     # print(BASE_URL + ENDPOINT +  "{0}/".format(new_data.id))
@@ -79,5 +79,5 @@ def test():
 # get_list()
 # print(create_update()) # list view
 # print(create_update_detail())
-print(do_obj_update()) ## put
-# print(do_obj_delete()) ## delete 
+# print(do_obj_update()) ## put
+print(do_obj_delete()) ## delete 
