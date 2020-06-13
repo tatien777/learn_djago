@@ -17,10 +17,9 @@ def get_list():
 def create_update():
     new_data = {
         'user': 3,
-        'content': 'new test',
-        'image':''
+        'content': 'new test'
     }
-    r = requests.post(BASE_URL + ENDPOINT  ,new_data)
+    r = requests.post(BASE_URL + ENDPOINT  ,json.dumps(new_data))
     # print(r.headers,r.status_code)
     if r.status_code == requests.codes.ok:
         # print(r.json())
@@ -45,7 +44,7 @@ def do_obj_update():
         'id': 15,
         'content': 'put test'
     }
-    r = requests.put(BASE_URL + ENDPOINT + "15/" ,data=json.dumps(new_data))
+    r = requests.put(BASE_URL + ENDPOINT + "15/" ,data= json.dumps(new_data) )  # json.dumps(new_data)
     # print(r.headers,r.status_code,r.json())
     print(r.status_code)
     if r.status_code == requests.codes.ok:
@@ -78,7 +77,7 @@ def test():
 #### TEST 
 # print()
 # get_list()
-# print(create_update())
+# print(create_update()) # list view
 # print(create_update_detail())
 print(do_obj_update()) ## put
 # print(do_obj_delete()) ## delete 
