@@ -33,13 +33,52 @@ def create_update_detail():
         'content': 'detail test',
         'image':''
     }
-    r = requests.post(BASE_URL + ENDPOINT + "1/" ,new_data)
+    r = requests.post(BASE_URL + ENDPOINT + "1/" ,data=new_data)
     # print(r.headers,r.status_code)
     if r.status_code == requests.codes.ok:
         # print(r.json())
         return r.json()
     return r.text
+
+def do_obj_update():
+    new_data = {
+        'id': 15,
+        'content': 'put test'
+    }
+    r = requests.put(BASE_URL + ENDPOINT + "15/" ,data=json.dumps(new_data))
+    # print(r.headers,r.status_code,r.json())
+    print(r.status_code)
+    if r.status_code == requests.codes.ok:
+        # print(r.json())
+        return r.json()
+    return r.text
+
+def do_obj_delete():
+    new_data = {
+        'id': 15
+    }
+    r = requests.delete(BASE_URL + ENDPOINT + "1/" )
+    # print(r.headers,r.status_code,r.json())
+    print(r.status_code)
+    if r.status_code == requests.codes.ok:
+        # print(r.json())
+        return r.json()
+    return r.text
+
+def test():
+    new_data = {
+        'id': 15,
+        'content': 'put test'
+    }
+    # print(BASE_URL + ENDPOINT +  "{0}/".format(new_data.id))
+
+    print(new_data.get("id"))
+    return new_data.get("id")
+
+#### TEST 
 # print()
 # get_list()
 # print(create_update())
-print(create_update_detail())
+# print(create_update_detail())
+print(do_obj_update()) ## put
+# print(do_obj_delete()) ## delete 
