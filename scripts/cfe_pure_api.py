@@ -4,14 +4,17 @@ import json
 BASE_URL = "http://127.0.0.1:8000/"
 ENDPOINT = "api/updates/"
 
-def get_list():
-    r =requests.get(BASE_URL + ENDPOINT)
+def get_list(id=None):
+    data = json.dumps({})
+    if id is not None:
+        data = json.dumps({"id":id})
+        
+    r =requests.get(BASE_URL + ENDPOINT,data=data)
+    # print(r.status_code)
+    if r.status_code != 200:
+        print("Not connection {}".format(str(r.status_code)))
+
     data = r.json()
-    print(type(json.dumps(data)))
-    for obj in data:
-        if obj['id'] ==1:
-            r2 =  requests.get(BASE_URL+ ENDPOINT + str(obj['id']))
-            print(r2.json())
     return data
 
 def create_update():
@@ -64,6 +67,31 @@ def do_obj_delete():
         return r.json()
     return r.text
 
+def do_all_view_method(method="put"):
+    new_data = {
+        "id": 14,
+        "user": 3,
+        'content': 'put test'
+    }
+    if method == "put":
+        r = requests.put(BASE_URL + ENDPOINT ,data= json.dumps(new_data) )  # json.dumps(new_data)
+        # print(r.headers,r.status_code,r.json())
+        print(r.status_code)
+        if r.status_code == requests.codes.ok:
+            # print(r.json())
+            return r.json()
+        return r.text
+    elif method=="delete":
+        r = requests.delete(BASE_URL + ENDPOINT + "{}/".format(new_data.get('id')) )
+        # print(r.headers,r.status_code,r.json())
+        print(r.status_code)
+        if r.status_code == requests.codes.ok:
+            # print(r.json())
+            return r.json()
+        return r.text
+    elif method=="get":
+        return get_list()
+
 def test():
     new_data = {
         'id': 14,
@@ -80,4 +108,5 @@ def test():
 # print(create_update()) # list view
 # print(create_update_detail())
 # print(do_obj_update()) ## put
-print(do_obj_delete()) ## delete 
+# print(do_obj_delete()) ## delete 
+print(do_all_view_method(method="get")) ## call allview for put/delete
