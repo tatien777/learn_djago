@@ -25,4 +25,5 @@ class Status(models.Model): #fb status, instagepost, tweet ...
         return str(self.content)[:50]
     class Meta:
         verbose_name        = 'Status post'
-        verbose_name_plural = 
+        verbose_name_plural = 'Status posts'
+        
