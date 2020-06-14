@@ -23,4 +23,6 @@ class Status(models.Model): #fb status, instagepost, tweet ...
 
     def __str__(self):
         return str(self.content)[:50]
-    
+    class Meta:
+        verbose_name        = 'Status post'
+        verbose_name_plural = 
